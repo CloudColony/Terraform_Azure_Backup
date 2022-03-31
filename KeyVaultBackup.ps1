@@ -10,7 +10,7 @@ $fileshareFolder="KeyVaultBackup"
 $localZipFolder = "$env:Temp\$fileshareFolder\$sub\$keyvaultName" # "C:\Users\caleb.adepoju\Desktop\KeyVaultBackUp\$fileshareFolder\$sub\$keyvaultName" 
 
 # Subscription
-Get-AzSubscription -SubscriptionId "" | ForEach-Object {
+Get-AzSubscription -SubscriptionId "33f92023-4c9e-4a77-90e1-cab6f73ef9d7" | ForEach-Object {
   $sub = $_.Name
 }
 
