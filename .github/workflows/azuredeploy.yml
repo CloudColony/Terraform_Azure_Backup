@@ -31,8 +31,7 @@ jobs:
     #   uses: azure/powershell@v1
     #   with:
     #     inlineScript: |
-    #       az account show
-    #       az storage -h
+    #       --template-file ./KeyVaultBackup.ps1
     
     - name: Deploy PowerShell script
       shell: pwsh
