@@ -7,7 +7,7 @@ $container = "kvbackupcontainer"
 $fileshareFolder="KeyVaultBackup" 
 
 
-$localZipFolder = "C:\Users\caleb.adepoju\Desktop\KeyVaultBackUp\$fileshareFolder\$sub\$keyvaultName" #"$env:Temp\$fileshareFolder\$sub\$keyvaultName"
+$localZipFolder = "$env:Temp\$fileshareFolder\$sub\$keyvaultName" # "C:\Users\caleb.adepoju\Desktop\KeyVaultBackUp\$fileshareFolder\$sub\$keyvaultName" 
 
 # Subscription
 Get-AzSubscription -SubscriptionId "" | ForEach-Object {
@@ -81,7 +81,7 @@ Set-AzStorageBlobContent `
   -Container $container `
   -File $zipFile `
   -Blob $blobPath `
-  -Context $storageAccount.Context 
+  -Context $ctx
 
 Remove-Item $tmpFolder -Recurse -Force
 Write-Output "Backup Complete"
