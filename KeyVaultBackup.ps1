@@ -1,4 +1,4 @@
-$StorageAccountKey = ""
+$StorageAccountKey = "oszdP+l1SPA0SJgzakeR6rWMX/K9VWPl7+l7GbmaT6b1Xkk67yamw6ZfhKT89E68iaCQbwdpkrA++ASt8H4KAw=="
 $keyvaultName = "kv-backup-veritas"
 $keyVaultResourceGroup = "veritas-rg"
 $storageAccountName = "dolayokunsa"
