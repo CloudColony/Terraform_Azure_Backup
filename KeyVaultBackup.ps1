@@ -10,7 +10,7 @@ $fileshareFolder="KeyVaultBackup"
 $localZipFolder = "$env:Temp\$fileshareFolder\$sub\$keyvaultName" # "C:\Users\caleb.adepoju\Desktop\KeyVaultBackUp\$fileshareFolder\$sub\$keyvaultName" 
 
 # Subscription
-Get-AzureSubscription -SubscriptionId "33f92023-4c9e-4a77-90e1-cab6f73ef9d7" | ForEach-Object {
+Get-AzureRmSubscription -SubscriptionId "33f92023-4c9e-4a77-90e1-cab6f73ef9d7" | ForEach-Object {
   $sub = $_.Name
 }
 
@@ -25,30 +25,30 @@ New-Item -ItemType Directory -Force -Path $tmpFolder | Out-Null
 Write-Output "Starting backup of KeyVault to local directory"
 
 # Certificates
-$certificates   = Get-AzureKeyVaultCertificate -VaultName $keyvaultName -IncludePending
+$certificates   = Get-AzureRmKeyVaultCertificate -VaultName $keyvaultName -IncludePending
 foreach ($cert in $certificates) {
-  Backup-AzureKeyVaultCertificate `
+  Backup-AzureRmKeyVaultCertificate `
     -Name $cert.name `
     -VaultName $keyvaultName `
     -OutputFile "$tmpFolder/certificate-$($cert.name)" | Out-Null
 }
 # Secrets
-$secrets = Get-AzureKeyVaultSecret -VaultName $keyvaultName 
+$secrets = Get-AzureRmKeyVaultSecret -VaultName $keyvaultName 
 foreach ($secret in $secrets) {
   #Exclude any secerets automatically generated when creating a cert, as these cannot be backed up   
   if (!($certificates.Name -contains $secret.name)) {
-    Backup-AzureKeyVaultSecret `
+    Backup-AzureRmKeyVaultSecret `
       -Name $secret.name `
       -VaultName $keyvaultName `
       -OutputFile "$tmpFolder/secret-$($secret.name)" | Out-Null
   }
 }
 # keys
-$keys = Get-AzureKeyVaultKey -VaultName $keyvaultName
+$keys = Get-AzureRmKeyVaultKey -VaultName $keyvaultName
 foreach ($key in $keys) {
   #Exclude any keys automatically generated when creating a cert, as these cannot be backed up   
   if (! ($certificates.Name -contains $key.name)) {
-    Backup-AzureKeyVaultKey `
+    Backup-AzureRmKeyVaultKey `
       -Name $key.name `
       -VaultName $keyvaultName `
       -OutputFile "$tmpFolder/key-$($key.name)" | Out-Null
@@ -58,7 +58,7 @@ foreach ($key in $keys) {
 Write-Output "Local file backup complete"  
 
 $storageAccount = 
-  Get-AzureStorageAccount `
+  Get-AzureRmStorageAccount `
     -ResourceGroupName $storageResourceGroup `
     -Name $storageAccountName 
 
@@ -71,13 +71,13 @@ $compress = @{
 }
 Compress-Archive @compress
 
-$ctx = New-AzureStorageContext -StorageAccountname $storageAccountName -StorageAccountKey $StorageAccountKey
+$ctx = New-AzureRmStorageContext -StorageAccountname $storageAccountName -StorageAccountKey $StorageAccountKey
 #Set-AzCurrentStorageAccountAccount -ResourceGroupName "veritas-rg" -AccountName "dolayokunsa"
 $blobPath = "$sub/$keyvaultName/$($keyvaultName)-$($timeStamp).zip"
 
 # upload files, overwriting existing
 Write-Output "Starting upload of backup to zip Files"
-Set-AzureStorageBlobContent `
+Set-AzureRmStorageBlobContent `
   -Container $container `
   -File $zipFile `
   -Blob $blobPath `
